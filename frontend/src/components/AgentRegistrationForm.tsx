@@ -1132,6 +1132,15 @@ export function AgentRegistrationForm({ mode, onRegister, onDeploy, onDeployHarn
                     >
                       Google ADK
                     </button>
+                    <button
+                      type="button"
+                      onClick={() => setAgentFramework("langgraph")}
+                      className={`rounded-[5px] px-3 py-1 text-xs font-medium transition-colors ${
+                        agentFramework === "langgraph" ? "bg-background shadow-sm" : "text-muted-foreground"
+                      }`}
+                    >
+                      LangGraph
+                    </button>
                   </div>
                 </section>
               )}

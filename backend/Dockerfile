@@ -15,6 +15,8 @@ COPY agents/strands_agent/src/ /agents/strands_agent/src/
 COPY agents/strands_agent/requirements.txt /agents/strands_agent/requirements.txt
 COPY agents/adk_agent/src/ /agents/adk_agent/src/
 COPY agents/adk_agent/requirements.txt /agents/adk_agent/requirements.txt
+COPY agents/langgraph_agent/src/ /agents/langgraph_agent/src/
+COPY agents/langgraph_agent/requirements.txt /agents/langgraph_agent/requirements.txt
 
 EXPOSE 8000
 

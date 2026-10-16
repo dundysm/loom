@@ -173,7 +173,7 @@ class AgentCreateRequest(BaseModel):
     role_arn: str | None = Field(None, description="Existing IAM role ARN or null to create new")
     protocol: str = Field(default="HTTP", description="HTTP, MCP, or A2A")
     network_mode: str = Field(default="PUBLIC", description="PUBLIC or VPC")
-    agent_framework: str = Field(default="strands", description="Custom-code agent framework: 'strands' or 'adk'. Only used for source='deploy'.")
+    agent_framework: str = Field(default="strands", description="Custom-code agent framework: 'strands', 'adk' or 'langgraph'. Only used for source='deploy'.")
     vpc_config_id: int | None = Field(None, description="VPC configuration ID (required when network_mode is VPC)")
     idle_timeout: int | None = Field(None, description="Idle runtime session timeout (seconds)")
     max_lifetime: int | None = Field(None, description="Max lifetime (seconds)")

@@ -24,6 +24,7 @@ AGENT_SOURCE_DIR = _AGENTS_DIR / "strands_agent"  # kept for existing imports/te
 AGENT_SOURCE_DIRS: dict[str, Path] = {
     "strands": _AGENTS_DIR / "strands_agent",
     "adk": _AGENTS_DIR / "adk_agent",
+    "langgraph": _AGENTS_DIR / "langgraph_agent",
 }
 
 
@@ -99,14 +100,15 @@ def build_agent_artifact(region: str, agent_framework: str = "strands") -> tuple
     """
     Build and upload the custom-code agent artifact to S3.
 
-    Copies agents/{strands_agent,adk_agent}/src/ (selected by agent_framework)
+    Copies agents/{strands_agent,adk_agent,langgraph_agent}/src/ (selected by agent_framework)
     and pip-installs requirements.txt into a temp directory, zips the
     contents, and uploads to S3.
 
     Args:
         region: AWS region name
         agent_framework: Which custom-code framework built this agent
-            ('strands' or 'adk'); selects the source directory and S3 prefix.
+            ('strands', 'adk' or 'langgraph'); selects the source directory
+            and S3 prefix.
 
     Returns:
         Tuple of (bucket, s3_key) for the uploaded artifact
@@ -274,9 +276,9 @@ def create_runtime(
 
     Note:
         The entryPoint/runtime below is the same regardless of which
-        custom-code framework (strands or adk) built the artifact at
-        artifact_bucket/artifact_prefix — both frameworks' handler.py
-        implement the same BedrockAgentCoreApp entrypoint contract at
+        custom-code framework (strands, adk or langgraph) built the artifact at
+        artifact_bucket/artifact_prefix — every framework's handler.py
+        implements the same BedrockAgentCoreApp entrypoint contract at
         src/handler.py, so no agent_framework parameter is needed here.
 
         platformVersion is always set to "V2" so every runtime gets

@@ -73,7 +73,7 @@ Loom weaves together agents, memory, MCP servers, A2A agents, and skills in a un
 
 | Area | What you get |
 | --- | --- |
-| **Agents** | Custom code (Strands or Google ADK) or no-code managed agents via AgentCore Harness; VPC egress and PrivateLink ingress; SSE streaming invocation; cold-start measurement |
+| **Agents** | Custom code (Strands, Google ADK or LangGraph) or no-code managed agents via AgentCore Harness; VPC egress and PrivateLink ingress; SSE streaming invocation; cold-start measurement |
 | **Models** | Amazon Bedrock, or route per agent through a self-hosted LiteLLM proxy with automatically vended per-agent scoped keys |
 | **Memory** | AgentCore Memory resources with semantic, summary, user-preference, episodic and custom strategies |
 | **Integrations** | MCP servers with tool discovery, and A2A agents with automatic Agent Card fetching — both with OAuth2 and m2m/obo delegation |
@@ -89,7 +89,7 @@ Loom weaves together agents, memory, MCP servers, A2A agents, and skills in a un
 - Deploy new agents or import existing AgentCore Runtime agents
 - Deploy managed agents via AgentCore harness (no code required) with configurable model parameters, built-in tools (code interpreter, browser), and MCP server integration
 - **VPC-enabled agents:** deploy both custom and managed agents with VPC egress, configure subnets and security groups via named VPC config profiles for private access to VPC-internal resources
-- Custom-code agent framework selection: Strands Agents (default) or Google Agent Development Kit (ADK), selectable per agent at deploy time with equivalent config schema, streaming event shapes, telemetry, and integration support
+- Custom-code agent framework selection: Strands Agents (default), Google Agent Development Kit (ADK) or LangGraph, selectable per agent at deploy time with equivalent config schema, streaming event shapes, telemetry, and integration support
 - SSE streaming invocation with real-time response display
 - Progressive deployment status tracking and async deletion
 - Cold-start latency measurement via CloudWatch log parsing
@@ -181,7 +181,7 @@ Loom weaves together agents, memory, MCP servers, A2A agents, and skills in a un
 
 ```
 loom/
-├── agents/            # Agent blueprint source code (Strands Agent, Google ADK)
+├── agents/            # Agent blueprint source code (Strands Agent, Google ADK, LangGraph)
 ├── backend/           # FastAPI backend (Python, SQLAlchemy, boto3)
 │   ├── etc/           # Backend environment config (app + ECS backend service)
 │   └── iac/           # Backend infrastructure (RDS, EC2 bastion, ECS backend service)

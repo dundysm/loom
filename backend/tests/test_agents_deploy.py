@@ -189,6 +189,40 @@ class TestAgentsDeployRouter(unittest.TestCase):
 
     @patch("app.routers.agents.create_runtime")
     @patch("app.routers.agents.build_agent_artifact")
+    def test_deploy_agent_with_langgraph_framework(
+        self, mock_build_artifact, mock_create_runtime
+    ):
+        """Selecting agent_framework='langgraph' persists it on the Agent row
+        and is passed through to build_agent_artifact so the LangGraph
+        source directory/artifact is built."""
+        mock_build_artifact.return_value = ("my-bucket", "artifacts/langgraph-agent.zip")
+        mock_create_runtime.return_value = {
+            "agentRuntimeArn": "arn:aws:bedrock-agentcore:us-east-1:123456789012:runtime/rt-lg",
+            "agentRuntimeId": "rt-lg",
+            "status": "CREATING",
+        }
+
+        response = self.client.post(
+            "/api/agents",
+            json={
+                "tags": {"loom:group": "demo"},
+                "source": "deploy",
+                "role_arn": "arn:aws:iam::123456789012:role/test-role",
+                "name": "langgraph_agent_test",
+                "model_id": "us.anthropic.claude-sonnet-4-6-v1",
+                "agent_framework": "langgraph",
+            },
+        )
+
+        self.assertEqual(response.status_code, 201)
+        self.assertEqual(response.json()["agent_framework"], "langgraph")
+
+        agent = self.session.query(Agent).filter(Agent.name == "langgraph_agent_test").first()
+        self.assertEqual(agent.agent_framework, "langgraph")
+        mock_build_artifact.assert_called_once_with(agent.region, agent_framework="langgraph")
+
+    @patch("app.routers.agents.create_runtime")
+    @patch("app.routers.agents.build_agent_artifact")
     def test_deploy_agent_success_updates_status(
         self, mock_build_artifact, mock_create_runtime
     ):

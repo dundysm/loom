@@ -41,7 +41,7 @@ class Agent(Base):
     endpoint_status = Column(String, nullable=True)
     protocol = Column(String, nullable=True)  # HTTP, MCP, A2A
     network_mode = Column(String, nullable=True)  # PUBLIC or VPC
-    agent_framework = Column(String, nullable=True)  # 'strands' or 'adk' (source='deploy' only)
+    agent_framework = Column(String, nullable=True)  # 'strands', 'adk' or 'langgraph' (source='deploy' only)
     # JSON: {type, pool_id, discovery_url, allowed_audience, allowed_clients,
     # allowed_scopes}. Deliberately no client secret — that goes to Secrets
     # Manager and only its ARN is kept, in the COGNITO_CLIENT_SECRET_ARN

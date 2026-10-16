@@ -45,6 +45,45 @@ class TestBuildAgentArtifact(unittest.TestCase):
             with self.assertRaises(FileNotFoundError):
                 build_agent_artifact("us-east-1")
 
+    @patch("boto3.client")
+    @patch("app.services.deployment.subprocess")
+    @patch.dict(os.environ, {"LOOM_ARTIFACT_BUCKET": "my-bucket"})
+    def test_build_agent_artifact_langgraph_is_isolated(self, mock_subprocess, mock_boto_client) -> None:
+        """agent_framework='langgraph' packages only agents/langgraph_agent/
+        source and installs only its own requirements.txt."""
+        import zipfile
+
+        captured: dict = {}
+
+        def _upload(zip_path, bucket, key):
+            with zipfile.ZipFile(zip_path) as zf:
+                captured["names"] = zf.namelist()
+                captured["agent_py"] = zf.read("src/agent.py").decode()
+            captured["key"] = key
+
+        mock_boto_client.return_value.upload_file.side_effect = _upload
+
+        bucket, key = build_agent_artifact("us-east-1", agent_framework="langgraph")
+
+        self.assertEqual(bucket, "my-bucket")
+        self.assertTrue(key.startswith("loom-artifacts/langgraph_agent/"))
+        pip_args = mock_subprocess.run.call_args.args[0]
+        requirements = pip_args[pip_args.index("-r") + 1]
+        self.assertTrue(requirements.endswith("agents/langgraph_agent/requirements.txt"))
+        self.assertIn("src/handler.py", captured["names"])
+        self.assertIn("src/integrations/approval.py", captured["names"])
+        self.assertIn("StateGraph", captured["agent_py"])
+        self.assertFalse(any("google.adk" in n or "strands" in n for n in captured["names"]))
+
+    def test_agent_source_dirs_include_langgraph(self) -> None:
+        """Every registered framework points at a real blueprint directory."""
+        from app.services.deployment import AGENT_SOURCE_DIRS
+
+        self.assertEqual(set(AGENT_SOURCE_DIRS), {"strands", "adk", "langgraph"})
+        for framework, path in AGENT_SOURCE_DIRS.items():
+            self.assertTrue((path / "src" / "handler.py").is_file(), framework)
+            self.assertTrue((path / "requirements.txt").is_file(), framework)
+
 
 class TestCreateRuntime(unittest.TestCase):
     """Test cases for create_runtime function."""

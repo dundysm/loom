@@ -43,6 +43,12 @@ loom/
 │       ├── config.py           # Agent configuration (identical schema to strands_agent)
 │       ├── integrations/       # Tool and service integrations (MCP, A2A, memory, approval, code interpreter)
 │       └── telemetry.py        # OTEL setup via ADK BasePlugin (TelemetryPlugin), same span names as Strands
+│   └── langgraph_agent/         # LangGraph blueprint (alternate custom-code framework, agent_framework="langgraph")
+│       ├── handler.py          # AgentCore Runtime entry point (BedrockAgentCoreApp, same event contract as Strands)
+│       ├── agent.py            # StateGraph (memory, model, tools nodes) with checkpointer per session
+│       ├── config.py           # Agent configuration (identical schema to strands_agent)
+│       ├── integrations/       # Tool and service integrations (MCP, A2A, memory, approval, code interpreter)
+│       └── telemetry.py        # OTEL spans via a LangChain callback handler, same span names as Strands
 ├── backend/                    # Backend API (see backend/SPECIFICATIONS.md)
 │   ├── app/
 │   │   ├── main.py             # FastAPI app (docs at /api/docs, /api/redoc, /api/openapi.json)
